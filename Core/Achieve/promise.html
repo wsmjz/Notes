@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>promise实现原理 | 苹果家+</title>
+    <meta name="generator" content="VuePress 1.5.4">
+    
+    <meta name="description" content="汇聚百川，终成江河">
+    <link rel="preload" href="/assets/css/0.styles.470a3808.css" as="style"><link rel="preload" href="/assets/js/app.de1d81cd.js" as="script"><link rel="preload" href="/assets/js/2.c2305d67.js" as="script"><link rel="preload" href="/assets/js/18.b93534bb.js" as="script"><link rel="prefetch" href="/assets/js/10.ea7cb643.js"><link rel="prefetch" href="/assets/js/11.a11503fd.js"><link rel="prefetch" href="/assets/js/12.8f4b0af7.js"><link rel="prefetch" href="/assets/js/13.68a19f50.js"><link rel="prefetch" href="/assets/js/14.0bf1eb19.js"><link rel="prefetch" href="/assets/js/15.91626234.js"><link rel="prefetch" href="/assets/js/16.2b71a137.js"><link rel="prefetch" href="/assets/js/17.3b78bd93.js"><link rel="prefetch" href="/assets/js/19.98089146.js"><link rel="prefetch" href="/assets/js/20.597cf61a.js"><link rel="prefetch" href="/assets/js/21.230ef33e.js"><link rel="prefetch" href="/assets/js/22.6012955a.js"><link rel="prefetch" href="/assets/js/23.3b9e0fd2.js"><link rel="prefetch" href="/assets/js/24.535e2208.js"><link rel="prefetch" href="/assets/js/25.9d93ae40.js"><link rel="prefetch" href="/assets/js/26.e8c62349.js"><link rel="prefetch" href="/assets/js/27.aa40645a.js"><link rel="prefetch" href="/assets/js/28.15d65c15.js"><link rel="prefetch" href="/assets/js/29.3bf54ac5.js"><link rel="prefetch" href="/assets/js/3.9ada7847.js"><link rel="prefetch" href="/assets/js/30.9f88906b.js"><link rel="prefetch" href="/assets/js/31.f78e0c14.js"><link rel="prefetch" href="/assets/js/32.405ceaf7.js"><link rel="prefetch" href="/assets/js/33.89e28487.js"><link rel="prefetch" href="/assets/js/34.6b58d7cd.js"><link rel="prefetch" href="/assets/js/35.d689a4cf.js"><link rel="prefetch" href="/assets/js/36.6259c160.js"><link rel="prefetch" href="/assets/js/37.eb3afbbe.js"><link rel="prefetch" href="/assets/js/38.4f3c72fa.js"><link rel="prefetch" href="/assets/js/39.59401d97.js"><link rel="prefetch" href="/assets/js/4.9848ea20.js"><link rel="prefetch" href="/assets/js/40.e5127ddd.js"><link rel="prefetch" href="/assets/js/41.cde46c4f.js"><link rel="prefetch" href="/assets/js/42.5a987bae.js"><link rel="prefetch" href="/assets/js/43.ce2bbfd2.js"><link rel="prefetch" href="/assets/js/44.e58cef39.js"><link rel="prefetch" href="/assets/js/45.5bdd2afc.js"><link rel="prefetch" href="/assets/js/46.cd5722fb.js"><link rel="prefetch" href="/assets/js/47.3e3d0c14.js"><link rel="prefetch" href="/assets/js/48.05bea5d4.js"><link rel="prefetch" href="/assets/js/5.e6d11cb5.js"><link rel="prefetch" href="/assets/js/6.5451d423.js"><link rel="prefetch" href="/assets/js/7.37e814f9.js"><link rel="prefetch" href="/assets/js/8.2424fb21.js"><link rel="prefetch" href="/assets/js/9.3efe92d5.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.470a3808.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">苹果家+</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="UI组件生态" class="dropdown-title"><span class="title">UI组件生态</span> <span class="arrow down"></span></button> <button type="button" aria-label="UI组件生态" class="mobile-dropdown-title"><span class="title">UI组件生态</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/components/jg/button.html" class="nav-link">
+  结构组件
+</a></li><li class="dropdown-item"><!----> <a href="/components/yw/note.html" class="nav-link">
+  业务组件
+</a></li><li class="dropdown-item"><!----> <a href="/components/lc/note.html" class="nav-link">
+  流程图组件
+</a></li><li class="dropdown-item"><!----> <a href="/components/button.html" class="nav-link">
+  地图组件
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="生态系统" class="dropdown-title"><span class="title">生态系统</span> <span class="arrow down"></span></button> <button type="button" aria-label="生态系统" class="mobile-dropdown-title"><span class="title">生态系统</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          项目
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ecology/admin/vue.html" class="nav-link">
+  ping-vue(简版vue)
+</a></li><li class="dropdown-subitem"><a href="/ecology/admin/vue.html" class="nav-link">
+  ping-react(简版react)
+</a></li><li class="dropdown-subitem"><a href="/ecology/inst.html" class="nav-link">
+  ping-offical-vue(响应式)
+</a></li><li class="dropdown-subitem"><a href="/ecology/inst.html" class="nav-link">
+  ping-xcx
+</a></li><li class="dropdown-subitem"><a href="/ecology/inst.html" class="nav-link">
+  H5商城
+</a></li></ul></li><li class="dropdown-item"><h4>
+          资源
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/components/jg/button.html" class="nav-link">
+  UI库-vue
+</a></li><li class="dropdown-subitem"><a href="/ecology/dev/devtools.html" class="nav-link">
+  基础资源ping-base-lib
+</a></li><li class="dropdown-subitem"><a href="/ecology/cli/cli.html" class="nav-link">
+  pi(核心，自动化配置)
+</a></li><li class="dropdown-subitem"><a href="/ecology/cli/cli.html" class="nav-link">
+  脚手架ping-cli
+</a></li><li class="dropdown-subitem"><a href="/ecology/webpack.html" class="nav-link">
+  打包工具ping-webpack
+</a></li><li class="dropdown-subitem"><a href="/ecology/schema.html" class="nav-link">
+  校验库
+</a></li><li class="dropdown-subitem"><a href="/ecology/schema.html" class="nav-link">
+  状态管理
+</a></li><li class="dropdown-subitem"><a href="/ecology/schema.html" class="nav-link">
+  路由
+</a></li><li class="dropdown-subitem"><a href="/ecology/schema.html" class="nav-link">
+  日期
+</a></li><li class="dropdown-subitem"><a href="/ecology/schema.html" class="nav-link">
+  图表
+</a></li><li class="dropdown-subitem"><a href="/ecology/schema.html" class="nav-link">
+  地图
+</a></li><li class="dropdown-subitem"><a href="/ecology/schema.html" class="nav-link">
+  关系流程图
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="核心" class="dropdown-title"><span class="title">核心</span> <span class="arrow down"></span></button> <button type="button" aria-label="核心" class="mobile-dropdown-title"><span class="title">核心</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/Core/Api/base.html" class="nav-link">
+  基础
+</a></li><li class="dropdown-item"><!----> <a href="/Core/V8/base.html" class="nav-link">
+  js(v8)引擎
+</a></li><li class="dropdown-item"><!----> <a href="/Core/Achieve/base.html" class="nav-link">
+  原理实现
+</a></li><li class="dropdown-item"><!----> <a href="/Core/Vue/base.html" class="nav-link">
+  Vue概记
+</a></li><li class="dropdown-item"><!----> <a href="/Core/React/base.html" class="nav-link">
+  React概记
+</a></li><li class="dropdown-item"><!----> <a href="/Core/MyWebpack/base.html" class="nav-link">
+  webpack
+</a></li></ul></div></div><div class="nav-item"><a href="/xingneng/base.html" class="nav-link">
+  性能优化
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="可视化" class="dropdown-title"><span class="title">可视化</span> <span class="arrow down"></span></button> <button type="button" aria-label="可视化" class="mobile-dropdown-title"><span class="title">可视化</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/Cansee/three.html" class="nav-link">
+  three.js
+</a></li><li class="dropdown-item"><!----> <a href="/Cansee/D3.html" class="nav-link">
+  D3
+</a></li></ul></div></div><div class="nav-item"><a href="/zaji/js/base.html" class="nav-link">
+  杂记
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="进阶" class="dropdown-title"><span class="title">进阶</span> <span class="arrow down"></span></button> <button type="button" aria-label="进阶" class="mobile-dropdown-title"><span class="title">进阶</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/jingjie/sjjg.html" class="nav-link">
+  数据结构
+</a></li><li class="dropdown-item"><!----> <a href="/jingjie/suanfa/base.html" class="nav-link">
+  算法
+</a></li><li class="dropdown-item"><!----> <a href="/jingjie/base.html" class="nav-link">
+  node
+</a></li><li class="dropdown-item"><!----> <a href="/Core/Achieve/.html" class="nav-link">
+  Linux
+</a></li><li class="dropdown-item"><!----> <a href="/Core/Achieve/.html" class="nav-link">
+  python
+</a></li></ul></div></div> <a href="https://github.com/wsmjz" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="UI组件生态" class="dropdown-title"><span class="title">UI组件生态</span> <span class="arrow down"></span></button> <button type="button" aria-label="UI组件生态" class="mobile-dropdown-title"><span class="title">UI组件生态</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/components/jg/button.html" class="nav-link">
+  结构组件
+</a></li><li class="dropdown-item"><!----> <a href="/components/yw/note.html" class="nav-link">
+  业务组件
+</a></li><li class="dropdown-item"><!----> <a href="/components/lc/note.html" class="nav-link">
+  流程图组件
+</a></li><li class="dropdown-item"><!----> <a href="/components/button.html" class="nav-link">
+  地图组件
+</a></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="生态系统" class="dropdown-title"><span class="title">生态系统</span> <span class="arrow down"></span></button> <button type="button" aria-label="生态系统" class="mobile-dropdown-title"><span class="title">生态系统</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><h4>
+          项目
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/ecology/admin/vue.html" class="nav-link">
+  ping-vue(简版vue)
+</a></li><li class="dropdown-subitem"><a href="/ecology/admin/vue.html" class="nav-link">
+  ping-react(简版react)
+</a></li><li class="dropdown-subitem"><a href="/ecology/inst.html" class="nav-link">
+  ping-offical-vue(响应式)
+</a></li><li class="dropdown-subitem"><a href="/ecology/inst.html" class="nav-link">
+  ping-xcx
+</a></li><li class="dropdown-subitem"><a href="/ecology/inst.html" class="nav-link">
+  H5商城
+</a></li></ul></li><li class="dropdown-item"><h4>
+          资源
+        </h4> <ul class="dropdown-subitem-wrapper"><li class="dropdown-subitem"><a href="/components/jg/button.html" class="nav-link">
+  UI库-vue
+</a></li><li class="dropdown-subitem"><a href="/ecology/dev/devtools.html" class="nav-link">
+  基础资源ping-base-lib
+</a></li><li class="dropdown-subitem"><a href="/ecology/cli/cli.html" class="nav-link">
+  pi(核心，自动化配置)
+</a></li><li class="dropdown-subitem"><a href="/ecology/cli/cli.html" class="nav-link">
+  脚手架ping-cli
+</a></li><li class="dropdown-subitem"><a href="/ecology/webpack.html" class="nav-link">
+  打包工具ping-webpack
+</a></li><li class="dropdown-subitem"><a href="/ecology/schema.html" class="nav-link">
+  校验库
+</a></li><li class="dropdown-subitem"><a href="/ecology/schema.html" class="nav-link">
+  状态管理
+</a></li><li class="dropdown-subitem"><a href="/ecology/schema.html" class="nav-link">
+  路由
+</a></li><li class="dropdown-subitem"><a href="/ecology/schema.html" class="nav-link">
+  日期
+</a></li><li class="dropdown-subitem"><a href="/ecology/schema.html" class="nav-link">
+  图表
+</a></li><li class="dropdown-subitem"><a href="/ecology/schema.html" class="nav-link">
+  地图
+</a></li><li class="dropdown-subitem"><a href="/ecology/schema.html" class="nav-link">
+  关系流程图
+</a></li></ul></li></ul></div></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="核心" class="dropdown-title"><span class="title">核心</span> <span class="arrow down"></span></button> <button type="button" aria-label="核心" class="mobile-dropdown-title"><span class="title">核心</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/Core/Api/base.html" class="nav-link">
+  基础
+</a></li><li class="dropdown-item"><!----> <a href="/Core/V8/base.html" class="nav-link">
+  js(v8)引擎
+</a></li><li class="dropdown-item"><!----> <a href="/Core/Achieve/base.html" class="nav-link">
+  原理实现
+</a></li><li class="dropdown-item"><!----> <a href="/Core/Vue/base.html" class="nav-link">
+  Vue概记
+</a></li><li class="dropdown-item"><!----> <a href="/Core/React/base.html" class="nav-link">
+  React概记
+</a></li><li class="dropdown-item"><!----> <a href="/Core/MyWebpack/base.html" class="nav-link">
+  webpack
+</a></li></ul></div></div><div class="nav-item"><a href="/xingneng/base.html" class="nav-link">
+  性能优化
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="可视化" class="dropdown-title"><span class="title">可视化</span> <span class="arrow down"></span></button> <button type="button" aria-label="可视化" class="mobile-dropdown-title"><span class="title">可视化</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/Cansee/three.html" class="nav-link">
+  three.js
+</a></li><li class="dropdown-item"><!----> <a href="/Cansee/D3.html" class="nav-link">
+  D3
+</a></li></ul></div></div><div class="nav-item"><a href="/zaji/js/base.html" class="nav-link">
+  杂记
+</a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="进阶" class="dropdown-title"><span class="title">进阶</span> <span class="arrow down"></span></button> <button type="button" aria-label="进阶" class="mobile-dropdown-title"><span class="title">进阶</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/jingjie/sjjg.html" class="nav-link">
+  数据结构
+</a></li><li class="dropdown-item"><!----> <a href="/jingjie/suanfa/base.html" class="nav-link">
+  算法
+</a></li><li class="dropdown-item"><!----> <a href="/jingjie/base.html" class="nav-link">
+  node
+</a></li><li class="dropdown-item"><!----> <a href="/Core/Achieve/.html" class="nav-link">
+  Linux
+</a></li><li class="dropdown-item"><!----> <a href="/Core/Achieve/.html" class="nav-link">
+  python
+</a></li></ul></div></div> <a href="https://github.com/wsmjz" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>原理实现</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/Core/Achieve/api.html" class="sidebar-link">Api</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/Core/Achieve/api.html#array-prototype-filter" class="sidebar-link">Array.prototype.filter()</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/api.html#array-prototype-map" class="sidebar-link">Array.prototype.map()</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/api.html#array-prototype-foreach" class="sidebar-link">Array.prototype.forEach()</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/api.html#array-prototype-reduce" class="sidebar-link">Array.prototype.reduce()</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/api.html#function-prototype-apply" class="sidebar-link">Function.prototype.apply()</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/api.html#function-prototype-call" class="sidebar-link">Function.prototype.call</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/api.html#function-prototype-bind" class="sidebar-link">Function.prototype.bind</a></li></ul></li><li><a href="/Core/Achieve/base.html" class="sidebar-link">核心</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#compose-组成-函数" class="sidebar-link">compose(组成) 函数</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#数组扁平化" class="sidebar-link">数组扁平化</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#数组去重" class="sidebar-link">数组去重</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#类数组转化为数组" class="sidebar-link">类数组转化为数组</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#debounce-防抖" class="sidebar-link">debounce（防抖)</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#throttle-节流" class="sidebar-link">throttle（节流）</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#函数柯里化" class="sidebar-link">函数柯里化</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#模拟new操作" class="sidebar-link">模拟new操作</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#instanceof" class="sidebar-link">instanceof</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#原型继承" class="sidebar-link">原型继承</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#object-is" class="sidebar-link">Object.is</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#object-assign" class="sidebar-link">Object.assign</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#深拷贝" class="sidebar-link">深拷贝</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#jsonp" class="sidebar-link">JSONP</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#ajax" class="sidebar-link">AJAX</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#event模块" class="sidebar-link">event模块</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#图片懒加载" class="sidebar-link">图片懒加载</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#滚动加载" class="sidebar-link">滚动加载</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#渲染几万条数据不卡住页面" class="sidebar-link">渲染几万条数据不卡住页面</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#打印出当前网页使用了多少种html元素" class="sidebar-link">打印出当前网页使用了多少种HTML元素</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#将virtualdom转化为真实dom结构" class="sidebar-link">将VirtualDom转化为真实DOM结构</a></li><li class="sidebar-sub-header"><a href="/Core/Achieve/base.html#字符串解析问题" class="sidebar-link">字符串解析问题</a></li></ul></li><li><a href="/Core/Achieve/promise.html" aria-current="page" class="active sidebar-link">promise实现原理</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="promise实现原理"><a href="#promise实现原理" class="header-anchor">#</a> promise实现原理</h1> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">let</span> p <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token comment">// 返回的 p 就是一个对象（可叫做promise对象，实例对象）</span>
+</code></pre></div><blockquote><p>1).一个promise实例的状态一经确定就不会改变了<br>
+2).如果返回的还是一个promise 会<code>等待(一直等待就相当于中断promise链的下面的then就不会执行了)</code>这个promise的返回结果</p></blockquote> <ul><li>resolvePromise函数 的几种情况</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 处理第一个then的返回值x</span>
+<span class="token keyword">function</span> <span class="token function">resolvePromise</span><span class="token punctuation">(</span><span class="token parameter">promise2<span class="token punctuation">,</span> x<span class="token punctuation">,</span> resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span><span class="token punctuation">(</span>x <span class="token operator">===</span> promise2<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">reject</span><span class="token punctuation">(</span>
+      <span class="token keyword">new</span> <span class="token class-name">TypeError</span><span class="token punctuation">(</span><span class="token string">'错误，自己永远等待自己'</span><span class="token punctuation">)</span>
+    <span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><ul><li>如果先<code>.catch</code>，再<code>.then</code> 会是什么情况？</li> <li>实例方法<code>.then</code>,<code>.catch</code>,<code>.finaly</code>,<code>.slice</code>,</li> <li>类的方法<code>.all</code></li> <li>如何终止一个promise链？</li></ul> <div class="language-js extra-class"><pre class="language-js"><code>返回一个既不成功，也不失败的promise
+</code></pre></div><ul><li>promise中进入失败态的<code>两种</code>情况</li></ul> <div class="language-js extra-class"><pre class="language-js"><code></code></pre></div><ul><li>为什么promise中链式调用返回的是一个新的promise，而不是this？</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">let</span> p <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token function">reject</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+p<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> undefind <span class="token comment">// 本来应该走到下一个的成功 但是这儿reject已经是失败态了(如果then返回的是this当前实例的话) 就不可能变成成功态（一个promise实例的状态一经确定就不会改变了），就会矛盾了</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span> <span class="token comment">// 每次调用then都需要返回一个新的promise状态，保证状态不影响</span>
+
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre></div><h3 id="特点"><a href="#特点" class="header-anchor">#</a> 特点</h3> <ul><li>Promise构造函数接受一个函数参数exector，exector接受resolve和reject两个函数并立即执行，通过resolve/reject改变状态</li> <li>状态改变后，触发原型链上的then、catch方法</li> <li>Promise类拥有静态方法resolve、reject、all、race</li> <li>实例方法then, catch,</li> <li>Promise内部异步代码执行的问题</li> <li>Promise的链式调用</li> <li>值传透</li> <li>状态一旦改变就不可逆！！自己</li></ul> <h3 id="promise并行限制"><a href="#promise并行限制" class="header-anchor">#</a> Promise并行限制</h3> <p>就是实现有并行限制的Promise调度器问题。</p> <h3 id="实现"><a href="#实现" class="header-anchor">#</a> 实现</h3> <ul><li>初版</li> <li>支持异步和链式调用
+此时初版还有三个方向需要完善：</li></ul> <ol><li>Promise内部异步代码执行的问题。</li> <li>Promise的链式调用</li> <li>值穿透: then参数期望是函数，传入非函数则会发生值穿透。值传透可以理解为，当传入then的不是函数的时候，这个then是无效的。</li></ol> <ul><li>实现catch()方法
+<code>Promise.prototype.catch</code>就是<code>Promise.prototype.then(null, onRejected)</code>的别名</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">catch</span><span class="token punctuation">(</span>onRejected<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> onRejected<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><ul><li>Promise.resolve()</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">static</span> <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token parameter">value</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token keyword">instanceof</span> <span class="token class-name">Promise</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 如果是Promise实例，直接返回</span>
+    <span class="token keyword">return</span> value<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token comment">// 如果不是Promise实例，返回一个新的Promise对象，状态为FULFILLED</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token function">resolve</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><ul><li>Promise.reject()
+<code>Promise.reject</code>也会返回一个Promise实例，状态为REJECTED。<br>
+与Promise.resolve不同的是，Promise.reject方法的参数会原封不动地作为reject的参数</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">static</span> <span class="token function">reject</span><span class="token punctuation">(</span><span class="token parameter">reason</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token function">reject</span><span class="token punctuation">(</span>reason<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre></div><ul><li>Promise.all
+<code>Promise.all</code>是支持链式调用的，本质上就是返回了一个Promise实例，通过<code>resolve</code>和<code>reject</code>来改变实例状态。</li></ul> <div class="language-js extra-class"><pre class="language-js"><code>Promise<span class="token punctuation">.</span><span class="token function-variable function">myAll</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">promiseArr</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> ans <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">let</span> index <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> promiseArr<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      promiseArr<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+      <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">res</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+        ans<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> res<span class="token punctuation">;</span>
+        index<span class="token operator">++</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>index <span class="token operator">===</span> promiseArr<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token function">resolve</span><span class="token punctuation">(</span>ans<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+      <span class="token punctuation">.</span><span class="token function">catch</span><span class="token punctuation">(</span><span class="token parameter">err</span> <span class="token operator">=&gt;</span> <span class="token function">reject</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+</code></pre></div><ul><li>Promise.race</li></ul> <div class="language-js extra-class"><pre class="language-js"><code>Promise<span class="token punctuation">.</span><span class="token function-variable function">race</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token parameter">promiseArr</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve<span class="token punctuation">,</span> reject</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    promiseArr<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token parameter">p</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token comment">// 如果不是Promise实例需要转化为Promise实例</span>
+      Promise<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span>
+        <span class="token parameter">val</span> <span class="token operator">=&gt;</span> <span class="token function">resolve</span><span class="token punctuation">(</span>val<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token parameter">err</span> <span class="token operator">=&gt;</span> <span class="token function">reject</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">,</span>
+      <span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+</code></pre></div></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">9/27/2020, 7:14:30 PM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/Core/Achieve/base.html" class="prev">
+        核心
+      </a></span> <!----></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.de1d81cd.js" defer></script><script src="/assets/js/2.c2305d67.js" defer></script><script src="/assets/js/18.b93534bb.js" defer></script>
+  </body>
+</html>
